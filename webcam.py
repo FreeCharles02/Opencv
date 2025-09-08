@@ -8,23 +8,24 @@ import time
 import base64
 import struct
 
-BUFF_SIZE = 65536
+BUFF_SIZE = 105536
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 server_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
 host_name = socket.gethostname()
-host_ip = "100.70.110.141" #socket.gethostbyname(host_name)
+host_ip = socket.gethostbyname(host_name)
+print(host_ip)
 port = 9999
 socket_address = (host_ip, port)
 server_socket.bind(socket_address)
 print("Listening at:", socket_address)
 model = YOLO('yolo11n.pt')
 webcamera = cv2.VideoCapture(0)
-fps,st,frames_to_count,cnt = (0,0,20,0)
+fps,st,frames_to_count,cnt = (0,0,50,0)
 
 while True:
 	msg,client_addr = server_socket.recvfrom(BUFF_SIZE)
 	print('GOT connection from ',client_addr)
-	WIDTH=480
+	WIDTH=640
 	success, frame = webcamera.read()
 	frame = cv2.flip(frame, 1)
 	while(webcamera.isOpened()):
@@ -37,7 +38,7 @@ while True:
 		key = cv2.waitKey(1) & 0xFF
 		results = model.predict(frame)
 		cv2.putText(frame, f"Total: {len(results[0].boxes)}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-		cv2.imshow("Live Camera", results[0].plot())
+		cv2.imshow("Live Camera", frame)
 		if key == ord('q'):
 			server_socket.close()
 			break
