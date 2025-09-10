@@ -10,7 +10,7 @@ BUFF_SIZE = 95536
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 client_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
 host_name = socket.gethostname()
-host_ip = "127.0.1.1"
+host_ip = "100.70.110.191"
 print(host_ip)
 port = 9999
 message = b'Hello'
@@ -39,4 +39,11 @@ while True:
 		except:
 			pass
 	cnt+=1
+
+	for result in results:
+		boxes = result.boxes 
+		for box in boxes:
+			c = box.cls
+			if model.names[int(c)]:
+				print("hello person!") 
 
